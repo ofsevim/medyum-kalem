@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
 import HeroSection from '@/components/HeroSection';
 import CategoryNavigation from '@/components/CategoryNavigation';
@@ -96,8 +95,6 @@ const sampleArticles = [
 ];
 
 const Index = () => {
-  const navigate = useNavigate();
-
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -110,12 +107,7 @@ const Index = () => {
         <section className="mb-16">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-3xl font-display font-bold">Öne Çıkan Yazılar</h2>
-            <button 
-              className="text-primary hover:underline"
-              onClick={() => navigate('/articles')}
-            >
-              Tümünü Gör
-            </button>
+            <button className="text-primary hover:underline">Tümünü Gör</button>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -129,12 +121,7 @@ const Index = () => {
         <section>
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-3xl font-display font-bold">En Çok Okunanlar</h2>
-            <button 
-              className="text-primary hover:underline"
-              onClick={() => navigate('/articles')}
-            >
-              Tümünü Gör
-            </button>
+            <button className="text-primary hover:underline">Tümünü Gör</button>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
