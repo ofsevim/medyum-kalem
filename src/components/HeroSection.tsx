@@ -1,8 +1,23 @@
 import { Button } from '@/components/ui/button';
 import { PenTool, BookOpen, Users } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 import heroImage from '@/assets/hero-editorial.jpg';
 
 const HeroSection = () => {
+  const { user, userRole } = useAuth();
+  const navigate = useNavigate();
+
+  const handleWriteClick = () => {
+    if (!user) {
+      navigate('/auth');
+    } else if (userRole === 'author' || userRole === 'admin') {
+      navigate('/write');
+    } else {
+      navigate('/auth'); // Redirect to get author role
+    }
+  };
+
   const stats = [
     { icon: BookOpen, label: 'Yazı', value: '2.5K+' },
     { icon: Users, label: 'Yazar', value: '500+' },
@@ -36,11 +51,20 @@ const HeroSection = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-12">
-            <Button size="lg" className="editorial-gradient text-white px-8">
+            <Button 
+              size="lg" 
+              className="editorial-gradient text-white px-8"
+              onClick={handleWriteClick}
+            >
               <PenTool className="w-5 h-5 mr-2" />
               Yazmaya Başla
             </Button>
-            <Button variant="outline" size="lg" className="px-8">
+            <Button 
+              variant="outline" 
+              size="lg" 
+              className="px-8"
+              onClick={() => navigate('/articles')}
+            >
               <BookOpen className="w-5 h-5 mr-2" />
               Yazıları Keşfet
             </Button>

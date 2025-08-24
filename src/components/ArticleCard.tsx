@@ -1,8 +1,13 @@
 import { Heart, MessageCircle, Share2, Clock, Eye } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
+import { toast } from '@/hooks/use-toast';
+import { useState } from 'react';
 
 interface ArticleCardProps {
+  id?: string;
   title: string;
   excerpt: string;
   author: {
@@ -24,6 +29,7 @@ interface ArticleCardProps {
 }
 
 const ArticleCard = ({ 
+  id,
   title, 
   excerpt, 
   author, 
@@ -35,6 +41,72 @@ const ArticleCard = ({
   coverImage,
   featured = false 
 }: ArticleCardProps) => {
+  const { user } = useAuth();
+  const [isLiked, setIsLiked] = useState(false);
+  const [likeCount, setLikeCount] = useState(stats.likes);
+
+  const handleLike = async () => {
+    if (!user) {
+      toast({
+        variant: 'destructive',
+        title: 'Giriş Gerekli',
+        description: 'Beğenmek için giriş yapmanız gerekiyor.',
+      });
+      return;
+    }
+
+    if (!id) return;
+
+    try {
+      if (isLiked) {
+        // Unlike
+        const { error } = await supabase
+          .from('likes')
+          .delete()
+          .eq('article_id', id)
+          .eq('user_id', user.id);
+
+        if (!error) {
+          setIsLiked(false);
+          setLikeCount(prev => prev - 1);
+        }
+      } else {
+        // Like
+        const { error } = await supabase
+          .from('likes')
+          .insert({
+            article_id: id,
+            user_id: user.id,
+          });
+
+        if (!error) {
+          setIsLiked(true);
+          setLikeCount(prev => prev + 1);
+        }
+      }
+    } catch (error) {
+      console.error('Error toggling like:', error);
+    }
+  };
+
+  const handleShare = () => {
+    if (navigator.share && id) {
+      navigator.share({
+        title,
+        text: excerpt,
+        url: `${window.location.origin}/article/${id}`,
+      });
+    } else {
+      // Fallback to clipboard
+      const url = `${window.location.origin}/article/${id}`;
+      navigator.clipboard.writeText(url).then(() => {
+        toast({
+          title: 'Link Kopyalandı',
+          description: 'Yazı linki panoya kopyalandı.',
+        });
+      });
+    }
+  };
   return (
     <article className={`
       editorial-card group cursor-pointer
@@ -134,20 +206,28 @@ const ArticleCard = ({
         {/* Stats */}
         <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
           <div className="flex items-center space-x-4">
-            <button className="flex items-center space-x-1 text-muted-foreground hover:text-red-500 transition-colors">
-              <Heart className="w-4 h-4" />
-              <span className="text-sm">{stats.likes}</span>
+            <button 
+              className={`flex items-center space-x-1 transition-colors ${
+                isLiked ? 'text-red-500' : 'text-muted-foreground hover:text-red-500'
+              }`}
+              onClick={handleLike}
+            >
+              <Heart className={`w-4 h-4 ${isLiked ? 'fill-current' : ''}`} />
+              <span className="text-sm">{likeCount}</span>
             </button>
-            <button className="flex items-center space-x-1 text-muted-foreground hover:text-primary transition-colors">
+            <div className="flex items-center space-x-1 text-muted-foreground">
               <MessageCircle className="w-4 h-4" />
               <span className="text-sm">{stats.comments}</span>
-            </button>
+            </div>
             <div className="flex items-center space-x-1 text-muted-foreground">
               <Eye className="w-4 h-4" />
               <span className="text-sm">{stats.views}</span>
             </div>
           </div>
-          <button className="text-muted-foreground hover:text-primary transition-colors">
+          <button 
+            className="text-muted-foreground hover:text-primary transition-colors"
+            onClick={handleShare}
+          >
             <Share2 className="w-4 h-4" />
           </button>
         </div>
