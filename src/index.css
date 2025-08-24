@@ -1,42 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* Editorial Design System - Modern Medium-style platform */
 
 @layer base {
   :root {
+    /* Core Editorial Colors */
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
+    --foreground: 220 13% 9%;
+    
+    /* Editorial Brand */
+    --primary: 220 100% 50%;
+    --primary-foreground: 0 0% 100%;
+    --primary-subtle: 220 60% 97%;
+    
+    /* Content Hierarchy */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-
+    --card-foreground: 220 13% 9%;
+    --card-border: 220 13% 91%;
+    
+    /* Interactive Elements */
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 9% 46%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
+    
+    /* Editorial Accents */
+    --accent: 47 96% 89%;
+    --accent-foreground: 220 13% 9%;
+    --success: 142 76% 36%;
+    --success-foreground: 0 0% 100%;
+    
+    /* System Colors */
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 220 100% 50%;
+    
+    /* Editorial Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(220 100% 50%) 0%, hsl(260 100% 60%) 100%);
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%) 0%, hsl(220 60% 98%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(220 60% 99%) 100%);
+    
+    /* Editorial Shadows */
+    --shadow-card: 0 1px 3px 0 hsl(220 13% 9% / 0.1), 0 1px 2px 0 hsl(220 13% 9% / 0.06);
+    --shadow-featured: 0 10px 25px -5px hsl(220 13% 9% / 0.1), 0 10px 10px -5px hsl(220 13% 9% / 0.04);
+    --shadow-hover: 0 20px 25px -5px hsl(220 13% 9% / 0.1), 0 10px 10px -5px hsl(220 13% 9% / 0.04);
+    
+    /* Typography Scale */
+    --font-display: 'Playfair Display', serif;
+    --font-body: 'Inter', sans-serif;
+    
+    /* Spacing & Layout */
+    --container-max: 1200px;
+    --content-max: 680px;
     --radius: 0.5rem;
+    --radius-lg: 0.75rem;
+    
+    /* Transitions */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-spring: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 
     --sidebar-background: 0 0% 98%;
 
@@ -100,6 +127,43 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-body antialiased;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+}
+
+@layer components {
+  /* Editorial Components */
+  .editorial-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+  
+  .editorial-content {
+    @apply max-w-4xl mx-auto;
+  }
+  
+  .editorial-card {
+    @apply bg-card border border-card-border rounded-lg overflow-hidden;
+    box-shadow: var(--shadow-card);
+    transition: var(--transition-smooth);
+  }
+  
+  .editorial-card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-2px);
+  }
+  
+  .editorial-gradient {
+    background: var(--gradient-hero);
+  }
+  
+  .editorial-text-gradient {
+    background: var(--gradient-hero);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 }
